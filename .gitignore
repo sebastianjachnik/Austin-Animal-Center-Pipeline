@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Env / secrets
+.env
+*.env
+credentials.json
+*.pem
+*.key
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Data files
+data/
+*.parquet
+*.csv
+*.jsonl
