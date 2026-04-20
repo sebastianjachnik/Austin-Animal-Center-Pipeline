@@ -3,7 +3,7 @@
 ## 1. Clone the Repository
 First, clone this repository to your local machine:
 ```sh
-git clone <YOUR_REPO_URL>
+git clone https://github.com/sebastianjachnik/Austin-Animal-Center-Pipeline.git
 ```
 Then, navigate into the project folder:
 ```sh
@@ -31,16 +31,23 @@ cd Austin-Animal-Center-Pipeline
    `terraform/keys/my-creds.json`
 
 ## 5. Update Configuration Files
-Modify the following file with your project-specific values:
-- `.env`
+Modify the following files with your project-specific values:
+- `.env` (GCP configuration and credentials path)
 - `terraform/variables.tf`
 
+The `.env` file contains configuration such as:
+- GCP project ID
+- dataset and bucket names
+- path to the service account credentials
+- Kestra UI account credentials
 
-Make sure the following variables are correctly set:
-- `project`
-- `region`
-- `gcs_bucket_name`
+These values are used by Kestra during pipeline execution.
+
+Make sure the following variables in `terraform/variables.tf` are correctly set:
+- `location`
 - `bq_dataset_name`
+- `gcs_bucket_name`
+
 
 ## 6. Install Dependencies
 Install dependencies using uv:
@@ -86,17 +93,8 @@ terraform plan
 terraform apply -auto-approve
 ```
 
-## 10. Configure Kestra KV Store
-In the Kestra UI, configure the following key-value pairs:
-
-- `GCP_PROJECT_ID`
-- `GCP_DATASET`
-- `GCP_BUCKET_NAME`
-- `GCP_LOCATION`
-- `GCP_CREDS`
-
-## 11. Run the Pipeline in Kestra
-1. Open Kestra-UI: http://localhost:8080
+## 10. Run the Pipeline in Kestra
+1. Open the Kestra UI: http://localhost:8080
 2. Navigate to:
    `04_master_pipeline`
 3. Execute the flow.
@@ -110,7 +108,7 @@ This pipeline will:
   - intermediate: joining datasets
   - marts: computing stay duration
 
-## 12. Create the Dashboard in Looker Studio
+## 11. Create the Dashboard in Looker Studio
 1. Connect Looker Studio to BigQuery.
 2. Use the table:
    `fct_animal_stays`
