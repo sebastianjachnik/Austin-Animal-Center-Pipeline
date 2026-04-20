@@ -35,3 +35,6 @@ data/
 *.parquet
 *.csv
 *.jsonl
+
+terraform/my-creds.json
+test-api.ipynb

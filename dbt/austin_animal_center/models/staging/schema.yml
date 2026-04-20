@@ -1,0 +1,138 @@
+version: 2
+
+sources:
+  - name: raw
+    description: >
+      Raw Austin Animal Center tables loaded from parquet files in Google Cloud Storage
+      into partitioned and clustered BigQuery tables.
+
+    database: "{{ env_var('DBT_DATABASE') }}"
+    schema: "{{ env_var('DBT_SCHEMA') }}"
+
+    tables:
+      - name: raw_intakes
+        description: >
+          Raw intake records for animals entering the Austin Animal Center.
+          Each row describes an intake event and includes intake timestamp,
+          intake type, condition, and animal attributes.
+        columns:
+          - name: animal_id
+            description: Unique identifier assigned to the animal record.
+            tests:
+              - not_null:
+                  severity: warn
+          - name: name
+            description: Reported name of the animal, if available.
+          - name: intake_datetime
+            description: Timestamp when the animal was recorded as entering the center.
+          - name: found_location
+            description: Location where the animal was found or collected.
+          - name: intake_type
+            description: Category of intake event, such as stray or owner surrender.
+          - name: intake_condition
+            description: Reported condition of the animal at intake.
+          - name: animal_type
+            description: Type of animal, such as dog, cat, or other.
+          - name: sex_upon_intake
+            description: Reported sex and reproductive status of the animal at intake.
+          - name: age_upon_intake
+            description: Reported age of the animal at intake as a textual value.
+          - name: breed
+            description: Reported breed of the animal.
+          - name: color
+            description: Reported color of the animal.
+
+      - name: raw_outcomes
+        description: >
+          Raw outcome records for animals leaving the Austin Animal Center.
+          Each row describes an outcome event and includes outcome timestamp,
+          outcome type, subtype, and animal attributes.
+        columns:
+          - name: animal_id
+            description: Unique identifier assigned to the animal record.
+            tests:
+              - not_null:
+                  severity: warn
+          - name: name
+            description: Reported name of the animal, if available.
+          - name: date_of_birth
+            description: Recorded date of birth of the animal, if known.
+          - name: outcome_datetime
+            description: Timestamp when the animal outcome was recorded.
+          - name: outcome_type
+            description: High-level outcome category, such as adoption or transfer.
+          - name: outcome_subtype
+            description: More detailed subtype of the recorded outcome.
+          - name: animal_type
+            description: Type of animal, such as dog, cat, or other.
+          - name: sex_upon_outcome
+            description: Reported sex and reproductive status of the animal at outcome.
+          - name: age_upon_outcome
+            description: Reported age of the animal at outcome as a textual value.
+          - name: breed
+            description: Reported breed of the animal.
+          - name: color
+            description: Reported color of the animal.
+
+models:
+  - name: stg_intakes
+    description: >
+      Cleaned staging model for animal intake records. Columns are explicitly selected
+      and cast to stable analytics-friendly types from the raw intake table.
+    columns:
+      - name: animal_id
+        description: Unique identifier assigned to the animal record.
+        tests:
+          - not_null:
+              severity: warn
+      - name: name
+        description: Reported name of the animal, if available.
+      - name: intake_datetime
+        description: Timestamp when the animal was recorded as entering the center.
+      - name: found_location
+        description: Location where the animal was found or collected.
+      - name: intake_type
+        description: Category of intake event, such as stray or owner surrender.
+      - name: intake_condition
+        description: Reported condition of the animal at intake.
+      - name: animal_type
+        description: Type of animal, such as dog, cat, or other.
+      - name: sex_upon_intake
+        description: Reported sex and reproductive status of the animal at intake.
+      - name: age_upon_intake
+        description: Reported age of the animal at intake as a textual value.
+      - name: breed
+        description: Reported breed of the animal.
+      - name: color
+        description: Reported color of the animal.
+
+  - name: stg_outcomes
+    description: >
+      Cleaned staging model for animal outcome records. Columns are explicitly selected
+      and cast to stable analytics-friendly types from the raw outcome table.
+    columns:
+      - name: animal_id
+        description: Unique identifier assigned to the animal record.
+        tests:
+          - not_null:
+              severity: warn
+      - name: name
+        description: Reported name of the animal, if available.
+      - name: date_of_birth
+        description: Recorded date of birth of the animal, if known.
+      - name: outcome_datetime
+        description: Timestamp when the animal outcome was recorded.
+      - name: outcome_type
+        description: High-level outcome category, such as adoption or transfer.
+      - name: outcome_subtype
+        description: More detailed subtype of the recorded outcome.
+      - name: animal_type
+        description: Type of animal, such as dog, cat, or other.
+      - name: sex_upon_outcome
+        description: Reported sex and reproductive status of the animal at outcome.
+      - name: age_upon_outcome
+        description: Reported age of the animal at outcome as a textual value.
+      - name: breed
+        description: Reported breed of the animal.
+      - name: color
+        description: Reported color of the animal.
