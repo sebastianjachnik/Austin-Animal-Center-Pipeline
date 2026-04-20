@@ -1,17 +1,17 @@
 # Austin Animal Center Data Pipeline
 
-This is my submission for the [Data Engineering Zoomcamp 2025](https://github.com/DataTalksClub/data-engineering-zoomcamp) final project.
+This is my submission for the [Data Engineering Zoomcamp 2026](https://github.com/DataTalksClub/data-engineering-zoomcamp) final project.
 
 ## Problem Description
 
-The Austin Animal Center dataset contains information about animal intakes and outcomes in a municipal shelter.
+The Austin Animal Center dataset contains information about animals entering and leaving an animal shelter.
 
 The goal of this project is to build an end-to-end data pipeline to analyze animal stay patterns and answer the following questions:
 
 - How has the average stay duration of animals changed over time?
 - How are different outcome types distributed (e.g., adoption, transfer, euthanasia)?
 
-This analysis helps understand shelter efficiency and animal lifecycle trends.
+This analysis provides insights into shelter efficiency and animal lifecycle trends.
 
 ## Data
 
@@ -41,7 +41,8 @@ These datasets are combined to compute animal stay duration.
 
 ## Data Pipeline
 
-The pipeline consists of the following steps:
+The pipeline processes data in batch mode and is orchestrated using Kestra.
+It consists of the following steps:
 
 1. Ingestion  
    Data is fetched via API and stored as parquet files in GCS  
@@ -72,11 +73,6 @@ The dashboard includes:
 To reproduce this project, follow the instructions here:  
 👉 [instructions.md](instructions.md)
 
-## Notes
-
-- dbt execution may show minor warnings, but all models are successfully built.  
-- The pipeline is designed to be modular and reproducible.  
-
 ## Author
 
-Sebastian
+Sebastian J.
