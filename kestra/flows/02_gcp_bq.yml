@@ -1,0 +1,58 @@
+id: 02_gcp_bq
+namespace: austin_animal_center
+description: |
+  Load parquet files from GCS into partitioned and clustered BigQuery raw tables.
+
+inputs:
+  - id: dataset
+    type: ENUM
+    defaults: intakes
+    description: "Dataset to load: intakes or outcomes"
+    values:
+      - intakes
+      - outcomes
+
+variables:
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/raw/{{inputs.dataset}}.parquet"
+  raw_table: "{{kv('GCP_DATASET')}}.raw_{{inputs.dataset}}"
+  ext_table: "{{kv('GCP_DATASET')}}.raw_{{inputs.dataset}}_ext"
+
+  timestamp_column: "{% if inputs.dataset == 'intakes' %}intake_datetime{% else %}outcome_datetime{% endif %}"
+  cluster_columns: "{% if inputs.dataset == 'intakes' %}animal_type, intake_type{% else %}animal_type, outcome_type{% endif %}"
+
+tasks:
+  - id: create_external_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE EXTERNAL TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.ext_table)}}`
+      OPTIONS (
+        format = 'PARQUET',
+        uris = ['{{render(vars.gcs_file)}}']
+      );
+
+  - id: create_raw_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.raw_table)}}`
+      PARTITION BY TIMESTAMP_TRUNC({{render(vars.timestamp_column)}}, MONTH)
+      CLUSTER BY {{render(vars.cluster_columns)}}
+      AS
+      SELECT
+        * EXCEPT({{render(vars.timestamp_column)}}),
+        TIMESTAMP_MICROS(
+          CAST({{render(vars.timestamp_column)}} / 1000 AS INT64)
+        ) AS {{render(vars.timestamp_column)}}
+      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.ext_table)}}`;
+
+  - id: drop_external_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      DROP EXTERNAL TABLE IF EXISTS `{{kv('GCP_PROJECT_ID')}}.{{render(vars.ext_table)}}`;
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"

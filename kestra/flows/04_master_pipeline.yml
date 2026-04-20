@@ -1,0 +1,50 @@
+id: 04_master_pipeline
+namespace: austin_animal_center
+description: |
+  Master pipeline for the Austin Animal Center project.
+  It ingests intake and outcome data, loads both datasets into BigQuery,
+  and then runs dbt transformations.
+
+tasks:
+  - id: ingest_intakes
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: austin_animal_center
+    flowId: 01_ingestion
+    inputs:
+      dataset: intakes
+
+  - id: ingest_outcomes
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: austin_animal_center
+    flowId: 01_ingestion
+    inputs:
+      dataset: outcomes
+
+  - id: bq_intakes
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: austin_animal_center
+    flowId: 02_gcp_bq
+    inputs:
+      dataset: intakes
+
+  - id: bq_outcomes
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: austin_animal_center
+    flowId: 02_gcp_bq
+    inputs:
+      dataset: outcomes
+
+  - id: run_dbt
+    type: io.kestra.plugin.core.flow.Subflow
+    namespace: austin_animal_center
+    flowId: 03_gcp_dbt
+    inputs:
+      dbt_command: dbt build
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"

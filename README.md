@@ -1,78 +1,82 @@
-# Austin Animal Center Pipeline
+# Austin Animal Center Data Pipeline
 
-## Overview
+This is my submission for the [Data Engineering Zoomcamp 2025](https://github.com/DataTalksClub/data-engineering-zoomcamp) final project.
 
-This project builds an end-to-end data engineering pipeline based on the
-**Austin Animal Center Intakes** and **Outcomes** datasets.
+## Problem Description
 
-The goal is to ingest, store, transform, and analyze animal shelter data to generate meaningful insights.
+The Austin Animal Center dataset contains information about animal intakes and outcomes in a municipal shelter.
 
----
+The goal of this project is to build an end-to-end data pipeline to analyze animal stay patterns and answer the following questions:
 
-## Datasets
+- How has the average stay duration of animals changed over time?
+- How are different outcome types distributed (e.g., adoption, transfer, euthanasia)?
 
-* Austin Animal Center Intakes
-* Austin Animal Center Outcomes
+This analysis helps understand shelter efficiency and animal lifecycle trends.
 
----
+## Data
 
-## Project Goals
+The dataset is sourced from the Austin Animal Center public data.
 
-* Build a reproducible data pipeline
-* Load and store raw data
-* Transform data into an analytical model
-* Enable SQL-based analysis
+It consists of two main tables:
 
----
+- Intakes – information about animals entering the shelter
+- Outcomes – information about animals leaving the shelter
 
-## Planned Architecture
+Source links:
+- [Austin Animal Center Intakes](https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Intakes-10-01-2013-to-05-05-2/wter-evkm/about_data)
+- [Austin Animal Center Outcomes](https://data.austintexas.gov/Health-and-Community-Services/Austin-Animal-Center-Outcomes-10-01-2013-to-05-05-/9t4d-g238/about_data)
 
-* Data ingestion (API / download)
-* Storage (e.g. Google Cloud Storage)
-* Data warehouse (BigQuery)
-* Transformations (dbt)
-* Orchestration (Kestra)
+These datasets are combined to compute animal stay duration.
 
----
+## Technologies Used
 
-## Project Structure
+- Docker – containerized environment
+- Python – data ingestion scripts
+- Terraform – infrastructure as code
+- Kestra – workflow orchestration
+- Google Cloud Storage (GCS) – data lake
+- BigQuery – data warehouse
+- dbt – data transformation (staging → intermediate → marts)
+- Looker Studio – dashboard visualization
 
-```
-Austin-Animal-Center-Pipeline/
-├── ingestion/
-├── orchestration/
-├── terraform/
-├── dbt/
-├── sql/
-├── data/
-└── README.md
-```
+## Data Pipeline
 
----
+The pipeline consists of the following steps:
 
-## Current Status
+1. Ingestion  
+   Data is fetched via API and stored as parquet files in GCS  
 
-🚧 Project initialized
+2. Data Loading  
+   Raw data is loaded into BigQuery as partitioned and clustered tables  
 
-* Repository created
-* Initial setup in progress
-* Next step: data ingestion pipeline
+3. Transformation (dbt)  
+   - staging: clean and standardize data  
+   - intermediate: join intakes and outcomes  
+   - marts: compute stay duration (`fct_animal_stays`)  
 
----
+4. Orchestration  
+   Kestra master pipeline runs all steps end-to-end  
 
-## Next Steps
+## Data Visualization
 
-* Ingest both datasets
-* Load into storage / warehouse
-* Perform initial data exploration
-* Build first transformations
+View the Looker Studio dashboard here:  
+👉 **https://datastudio.google.com/reporting/676a3203-5520-471a-823a-175573ebce8c**
 
----
+The dashboard includes:
 
-## Tech Stack (planned)
+- Average Animal Stay Duration by Month  
+- Distribution of Animal Outcomes (Top 5)  
 
-* Python
-* Google Cloud Platform (GCS, BigQuery)
-* dbt
-* Kestra
-* Terraform
+## Setup & Reproduction
+
+To reproduce this project, follow the instructions here:  
+👉 [instructions.md](instructions.md)
+
+## Notes
+
+- dbt execution may show minor warnings, but all models are successfully built.  
+- The pipeline is designed to be modular and reproducible.  
+
+## Author
+
+Sebastian

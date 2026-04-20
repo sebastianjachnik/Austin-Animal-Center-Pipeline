@@ -8,8 +8,7 @@ venv/
 .ipynb_checkpoints/
 
 # Env / secrets
-.env
-*.env
+!.env
 credentials.json
 *.pem
 *.key
