@@ -70,8 +70,7 @@ The dashboard includes:
 
 ## Setup & Reproduction
 
-To reproduce this project, follow the instructions here:  
-👉 [instructions.md](instructions.md)
+To reproduce this project, follow the instructions here: [instructions.md](instructions.md)
 
 ## Author
 
