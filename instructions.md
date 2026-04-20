@@ -68,23 +68,6 @@ Wait until Kestra is fully running.
 uv run python kestra/deploy_kestra.py
 ```
 
-### Note on dbt Sync
-
-Ensure that the `03_gcp_dbt` workflow is configured with the correct repository URL:
-
-```yaml
-tasks:
-  - id: sync
-    type: io.kestra.plugin.git.SyncNamespaceFiles
-    url: https://github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>
-    branch: main
-    namespace: "{{flow.namespace}}"
-    gitDirectory: dbt/austin_animal_center
-    dryRun: false
-```
-
-This step ensures that Kestra can fetch the dbt project from your repository.
-
 ## 9. Provision Infrastructure (Terraform)
 ```sh
 cd terraform
