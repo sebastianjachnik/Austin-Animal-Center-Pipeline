@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: int_animal_stays
+    description: >
+      Intermediate model joining animal intake and outcome records on animal_id.
+      This model prepares a unified view of animal lifecycle events without applying
+      business filtering logic. It may contain multiple rows per animal due to repeated events.
+
+    columns:
+      - name: animal_id
+        description: Unique identifier assigned to the animal record.
+        tests:
+          - not_null
+
+      - name: animal_type
+        description: Type of animal, such as dog, cat, or other.
+
+      - name: breed
+        description: Reported breed of the animal.
+
+      - name: color
+        description: Reported color of the animal.
+
+      - name: intake_datetime
+        description: Timestamp when the animal entered the shelter.
+
+      - name: intake_type
+        description: Category of intake event, such as stray or owner surrender.
+
+      - name: intake_condition
+        description: Condition of the animal at intake.
+
+      - name: outcome_datetime
+        description: Timestamp when the animal left the shelter.
+
+      - name: outcome_type
+        description: High-level outcome category such as adoption or transfer.
+
+      - name: outcome_subtype
+        description: More detailed subtype of the outcome event.

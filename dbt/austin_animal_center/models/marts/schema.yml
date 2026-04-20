@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: fct_animal_stays
+    description: >
+      Fact table containing completed animal stays at the Austin Animal Center.
+      Each row represents a full stay from intake to outcome, including calculated
+      stay duration. Only records with both intake and outcome timestamps are included.
+
+    columns:
+      - name: animal_id
+        description: Unique identifier assigned to the animal record.
+        tests:
+          - not_null
+
+      - name: animal_type
+        description: Type of animal, such as dog, cat, or other.
+
+      - name: breed
+        description: Reported breed of the animal.
+
+      - name: color
+        description: Reported color of the animal.
+
+      - name: intake_datetime
+        description: Timestamp when the animal entered the shelter.
+
+      - name: outcome_datetime
+        description: Timestamp when the animal left the shelter.
+
+      - name: outcome_type
+        description: High-level outcome category such as adoption or transfer.
+
+      - name: outcome_subtype
+        description: More detailed subtype of the outcome event.
+
+      - name: stay_duration_days
+        description: >
+          Number of days the animal stayed in the shelter, calculated as the
+          difference between outcome and intake timestamps.
+        tests:
+          - not_null
